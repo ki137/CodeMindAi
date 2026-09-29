@@ -1,0 +1,13 @@
+/* App-level resets and globals handled in index.css */
+
+/* IDE page needs full height from root */
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure the IDE route fills height */
+.ide-page {
+  flex: 1;
+}

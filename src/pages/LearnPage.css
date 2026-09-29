@@ -1,0 +1,106 @@
+.learn-page { padding-bottom: 48px; }
+
+.learn-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.learn-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-5);
+}
+
+.learn-summary-item { display: flex; flex-direction: column; gap: 2px; text-align: center; }
+.learn-summary-val { font-size: 1.25rem; font-weight: 800; color: var(--text-dark); line-height: 1; }
+.learn-summary-lbl { font-size: 0.75rem; color: var(--text-muted); }
+.learn-summary-sep { width: 1px; height: 32px; background: var(--border-light); }
+
+.learn-controls {
+  display: flex;
+  gap: var(--space-4);
+  align-items: center;
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.learn-search-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  flex-shrink: 0;
+  transition: border-color var(--transition-fast);
+}
+
+.learn-search-wrapper:focus-within { border-color: var(--teal); }
+
+.learn-search {
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--text-dark);
+  background: transparent;
+  width: 200px;
+  font-family: var(--font-sans);
+}
+
+.learn-search::placeholder { color: var(--text-faint); }
+
+.learn-categories { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.concepts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-4);
+}
+
+.concept-card {
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.concept-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.concept-card-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.concept-icon-teal { background: var(--teal-10); color: var(--teal); }
+.concept-icon-yellow { background: var(--yellow-10); color: #a07c00; }
+.concept-icon-orange { background: var(--orange-10); color: var(--orange); }
+
+.concept-card-name {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin: 0 0 4px;
+}
+
+.concept-card-stats {
+  display: flex;
+  justify-content: space-between;
+}
