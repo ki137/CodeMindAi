@@ -273,24 +273,25 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Learning Loop Section */}
+      {/* Infinite Horizontal Marquee Learning Loop Section */}
       <section className="loop-section" id="how-it-works">
         <div className="container">
           <div className="section-header">
-            <span className="section-label">The Learning Loop</span>
+            <span className="section-label">THE LEARNING LOOP</span>
             <h2>How CodeMind Works</h2>
             <p>Every coding session follows an intelligent learning cycle designed to build genuine understanding.</p>
           </div>
-          <div className="loop-steps">
-            {learningLoop.map((step, i) => (
-              <div key={step.label} className="loop-step">
+        </div>
+
+        <div className="loop-marquee-container">
+          <div className="loop-marquee-track">
+            {[...learningLoop, ...learningLoop, ...learningLoop, ...learningLoop].map((step, i) => (
+              <div key={`${step.label}-${i}`} className="loop-step">
                 <div className={`loop-step-icon loop-icon-${step.color}`}>
                   <step.icon size={20} />
                 </div>
                 <span className="loop-step-label">{step.label}</span>
-                {i < learningLoop.length - 1 && (
-                  <ChevronRight size={16} color="var(--text-faint)" className="loop-arrow" />
-                )}
+                <ChevronRight size={16} color="#000000" className="loop-arrow" />
               </div>
             ))}
           </div>
@@ -337,30 +338,43 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Neo-Brutalist Scroll Stack Features Section */}
       <section className="features-section" id="features">
         <div className="container">
           <div className="section-header">
-            <span className="section-label">Core Features</span>
+            <span className="section-label">CORE FEATURES</span>
             <h2>We Don't Just Detect Wrong Code.</h2>
             <p className="features-subtitle">We detect wrong understanding.</p>
           </div>
 
-          <div className="features-grid">
-            {features.map((f) => (
+          <div className="scroll-stack-wrapper">
+            {features.map((f, i) => (
               <div
                 key={f.number}
-                className={`feature-card card card-${f.color === 'pink' ? 'pink' : f.color}`}
+                className="scroll-stack-card"
+                style={{
+                  top: `calc(110px + ${i * 32}px)`,
+                  zIndex: i + 1,
+                }}
               >
-                <div className="feature-number">{f.number}</div>
-                <div className={`feature-icon-wrapper feature-icon-${f.color}`}>
-                  <f.icon size={22} />
+                <div className="stack-card-header">
+                  <div className="stack-card-number">{f.number}</div>
+                  <div className="stack-card-icon">
+                    <f.icon size={24} color="#FFFFFF" />
+                  </div>
                 </div>
-                <h3 className="feature-title">{f.title}</h3>
-                <p className="feature-desc">{f.description}</p>
-                <Link to="/ide" className={`feature-link feature-link-${f.color}`}>
-                  See it in action <ArrowRight size={14} />
-                </Link>
+
+                <div className="stack-card-body">
+                  <h3 className="stack-card-title">{f.title}</h3>
+                  <p className="stack-card-desc">{f.description}</p>
+                </div>
+
+                <div className="stack-card-footer">
+                  <Link to="/ide" className="stack-card-btn">
+                    SEE IT IN ACTION
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
