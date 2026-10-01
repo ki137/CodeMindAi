@@ -110,7 +110,8 @@
 
 /* IDE Preview */
 .hero-ide-preview {
-  animation: float 4s ease-in-out infinite;
+  perspective: 1000px;
+  transform-style: preserve-3d;
 }
 
 .ide-preview {
@@ -227,6 +228,302 @@
 }
 
 .loop-arrow { flex-shrink: 0; }
+
+/* GROWW-STYLE PINNED SCROLL SHOWCASE */
+.groww-pinned-section {
+  padding: 80px 0;
+  background: linear-gradient(180deg, var(--bg-warm) 0%, #edf9f9 50%, var(--bg-warm) 100%);
+  position: relative;
+}
+
+.groww-section-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.groww-section-header h2 {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin: 12px 0;
+}
+
+.groww-section-header p {
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.groww-showcase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 48px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.groww-steps-column {
+  display: flex;
+  flex-direction: column;
+  gap: 160px;
+  padding: 60px 0 160px 0;
+}
+
+.pinned-text-step {
+  padding: 36px;
+  border-radius: var(--radius-2xl);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.45;
+  transform: scale(0.96);
+}
+
+.pinned-text-step.step-active {
+  opacity: 1;
+  transform: scale(1.02);
+  background: #ffffff;
+  border-color: var(--teal);
+  box-shadow: 0 24px 60px rgba(6, 148, 148, 0.18), 0 0 0 2px rgba(6, 148, 148, 0.12);
+}
+
+.step-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.step-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.step-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+.step-indicator-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.step-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal) 0%, var(--teal-light) 100%);
+  transition: width 0.5s ease;
+}
+
+.groww-visual-column {
+  position: relative;
+  height: 100%;
+}
+
+.groww-pinned-visual {
+  position: sticky;
+  top: calc(50vh - 210px); /* Centered vertically in viewport */
+  width: 100%;
+  z-index: 10;
+}
+
+.groww-mockup-card {
+  background: var(--editor-bg);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 30px 70px rgba(12, 34, 34, 0.25), 0 0 0 1px rgba(6, 148, 148, 0.3);
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+.mockup-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mockup-dots { display: flex; gap: 6px; }
+
+.mockup-header-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-mono);
+}
+
+.mockup-content {
+  padding: 24px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mockup-step-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mockup-code-window {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  border-radius: 12px;
+  line-height: 1.8;
+}
+
+.code-kw { color: #f472b6; font-weight: 600; }
+.code-fn { color: #38bdf8; }
+.code-err { color: #ff5555; font-weight: 800; background: rgba(255,85,85,0.2); padding: 1px 4px; border-radius: 4px; }
+.code-indent { padding-left: 20px; }
+
+.mockup-alert-box {
+  background: rgba(255, 130, 67, 0.12);
+  border-left: 4px solid var(--orange);
+  padding: 14px 16px;
+  border-radius: 10px;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff9055;
+  margin-bottom: 4px;
+}
+
+.alert-desc {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.socratic-chat-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-bubble {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 90%;
+}
+
+.chat-ai { margin-right: auto; }
+.chat-user { margin-left: auto; flex-direction: row-reverse; }
+
+.chat-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-text {
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 14px;
+  line-height: 1.5;
+}
+
+.chat-ai .chat-text {
+  background: rgba(6, 148, 148, 0.18);
+  color: #e2e8f0;
+  border-top-left-radius: 2px;
+}
+
+.chat-user .chat-text {
+  background: var(--teal);
+  color: white;
+  border-top-right-radius: 2px;
+}
+
+.knowledge-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.concept-row {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 14px 16px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.concept-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.concept-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #f1f5f9;
+}
+
+.concept-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.concept-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal) 0%, #34d399 100%);
+  border-radius: 4px;
+}
+
+.mastery-unlocked-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(52, 211, 153, 0.12);
+  border: 1px solid rgba(52, 211, 153, 0.3);
+  border-radius: 14px;
+}
+
+.unlocked-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #34d399;
+}
+
+.unlocked-subtitle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+}
 
 /* Features */
 .features-section { padding: var(--space-16) 0; }
@@ -406,6 +703,8 @@
   .hero-section .container { grid-template-columns: 1fr; gap: var(--space-10); }
   .demo-inner { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: 1fr; }
+  .groww-showcase-grid { grid-template-columns: 1fr; }
+  .groww-pinned-visual { position: relative !important; top: 0 !important; }
 }
 
 @media (max-width: 768px) {

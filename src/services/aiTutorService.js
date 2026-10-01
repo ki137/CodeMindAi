@@ -54,8 +54,22 @@ The key insight is: \`range(6)\` generates 0,1,2,3,4,**5** — but index 5 doesn
 };
 
 let conversationHistory = [];
+let apiKey = import.meta.env.VITE_AI_API_KEY || localStorage.getItem('ai_api_key') || 'BCnVjjUPblfTX8qRS6zGMTkZsMVKj0jkoHxr6BVNnFlbbQ7CTa3dJQQJ99CIACF24PCXJ3w3AAAAACOGrnQh';
 
 export const aiTutorService = {
+  getApiKey() {
+    return apiKey;
+  },
+
+  setApiKey(key) {
+    apiKey = key;
+    if (key) {
+      localStorage.setItem('ai_api_key', key);
+    } else {
+      localStorage.removeItem('ai_api_key');
+    }
+  },
+
   resetConversation() {
     conversationHistory = [];
   },
@@ -99,7 +113,7 @@ export const aiTutorService = {
           } else if (lowerMsg.includes('don\'t know') || lowerMsg.includes('not sure') || lowerMsg.includes('help')) {
             response = socraticResponses.hint_1;
           } else {
-            response = "Interesting thinking. Let's look at it another way — if I asked you to count 5 objects starting from zero, what numbers would you use?";
+            response = "Interesting thinking. Let me help guide you — if I asked you to count 5 objects starting from zero, what numbers would you use?";
           }
         }
 
@@ -108,6 +122,7 @@ export const aiTutorService = {
           message: response,
           timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
           mode,
+          apiKeyActive: !!apiKey,
         };
 
         conversationHistory.push({ role: 'student', message: userMessage });

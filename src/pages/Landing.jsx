@@ -1,11 +1,16 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Brain, GitBranch, Target, ArrowRight, Play,
   AlertTriangle, MessageCircle, Sparkles, ChevronRight,
-  Code2, CheckCircle
+  Code2, CheckCircle, Flame, Award, Zap, Terminal, ShieldCheck
 } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Layout/Navbar';
 import './Landing.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -47,74 +52,228 @@ const learningLoop = [
   { label: 'Mastery', icon: CheckCircle, color: 'teal' },
 ];
 
+const growwShowcaseSteps = [
+  {
+    id: 1,
+    tag: '01 · REAL-TIME PATTERN MONITORING',
+    title: 'Code Mindfully. Detect Cognitive Gaps.',
+    desc: 'As you write and execute code in our IDE, CodeMind analyzes not just runtime errors, but the cognitive path that led to them.',
+    badge: 'IndexError Pattern Detected',
+    badgeColor: 'orange',
+  },
+  {
+    id: 2,
+    tag: '02 · SOCRATIC INTERACTIVE CHAT',
+    title: 'Guided Questions, Not Direct Answers.',
+    desc: 'The Socratic AI Tutor prompts you with targeted micro-questions that challenge your assumptions until you discover the fix yourself.',
+    badge: 'Socratic Tutor Active',
+    badgeColor: 'teal',
+  },
+  {
+    id: 3,
+    tag: '03 · CONCEPT KNOWLEDGE GRAPH',
+    title: 'Track Skill Mastery in Real Time.',
+    desc: 'Watch your mental model evolve as detected misconceptions transform into verified programming concepts on your personalized graph.',
+    badge: 'Mastery Score +25%',
+    badgeColor: 'green',
+  },
+];
+
 export function LandingPage() {
+  const landingRef = useRef(null);
+  const heroRef = useRef(null);
+  const heroIdeRef = useRef(null);
+  const pinnedSectionRef = useRef(null);
+  const pinnedVisualRef = useRef(null);
+  const statsRef = useRef(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  // Counter state values
+  const [stat1, setStat1] = useState(0);
+  const [stat2, setStat2] = useState(0);
+  const [stat3, setStat3] = useState(0);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Hero Entrance Animation
+      const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      heroTimeline
+        .fromTo('.hero-badge', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.8 })
+        .fromTo('.hero-title-line', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15 }, '-=0.5')
+        .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+        .fromTo('.hero-cta-btn', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1 }, '-=0.3')
+        .fromTo('.hero-ide-preview', { opacity: 0, y: 50, rotateX: 15 }, { opacity: 1, y: 0, rotateX: 0, duration: 1 }, '-=0.6');
+
+      // 2. Hero IDE Parallax Scroll Effect (3D Tilt flattening on scroll)
+      gsap.to(heroIdeRef.current, {
+        scrollTrigger: {
+          trigger: heroRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        },
+        y: 80,
+        scale: 0.96,
+        opacity: 0.8,
+      });
+
+      // 3. Counter ScrollTrigger
+      ScrollTrigger.create({
+        trigger: statsRef.current,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          const obj = { s1: 0, s2: 0, s3: 0 };
+          gsap.to(obj, {
+            s1: 9,
+            s2: 68,
+            s3: 7,
+            duration: 2,
+            ease: 'power2.out',
+            onUpdate: () => {
+              setStat1(Math.floor(obj.s1));
+              setStat2(Math.floor(obj.s2));
+              setStat3(Math.floor(obj.s3));
+            },
+          });
+        },
+      });
+
+      // 4. Learning Loop Items Reveal
+      gsap.fromTo(
+        '.loop-step',
+        { opacity: 0, y: 30, scale: 0.8 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: '.loop-section',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // 5. Groww-style Pinned Scroll Showcase (Sticky Card Pinning)
+      const steps = gsap.utils.toArray('.pinned-text-step');
+      steps.forEach((step, index) => {
+        ScrollTrigger.create({
+          trigger: step,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onEnter: () => setActiveStep(index),
+          onEnterBack: () => setActiveStep(index),
+        });
+      });
+
+      // 6. Core Features Grid Stagger Reveal
+      gsap.fromTo(
+        '.feature-card',
+        { opacity: 0, y: 40 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          stagger: 0.15,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: '.features-grid',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // 7. Demo CTA Card Reveal
+      gsap.fromTo(
+        '.cta-card',
+        { opacity: 0, scale: 0.95, y: 30 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'back.out(1.4)',
+          scrollTrigger: {
+            trigger: '.cta-section',
+            start: 'top 80%',
+          },
+        }
+      );
+
+    }, landingRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="landing-page">
+    <div className="landing-page" ref={landingRef}>
       <Navbar />
 
       {/* Hero */}
-      <section className="hero-section">
+      <section className="hero-section" ref={heroRef}>
         <div className="hero-bg-pattern" />
         <div className="container">
           <div className="hero-content">
-            <div className="hero-badge animate-fadeIn">
+            <div className="hero-badge">
               <span className="status-dot" />
               <span>BYTEATHON 2026 — BYT03</span>
               <span className="hero-badge-sep">·</span>
               <span>Uncover Programming Misconceptions</span>
             </div>
 
-            <h1 className="hero-title animate-slideUp">
-              Understand How You{' '}
-              <span className="hero-title-teal">Think</span>.
+            <h1 className="hero-title">
+              <span className="hero-title-line">Understand How You</span>
               <br />
-              Not Just How You{' '}
-              <span className="hero-title-orange">Code</span>.
+              <span className="hero-title-line hero-title-teal">Think</span>
+              <span className="hero-title-line">. Not Just How You </span>
+              <span className="hero-title-line hero-title-orange">Code</span>.
             </h1>
 
-            <p className="hero-subtitle animate-slideUp" style={{ animationDelay: '0.1s' }}>
+            <p className="hero-subtitle">
               An intelligent coding environment that detects hidden programming misconceptions
               and helps students build real conceptual understanding through Socratic AI guidance.
             </p>
 
-            <div className="hero-cta animate-slideUp" style={{ animationDelay: '0.2s' }}>
-              <Link to="/dashboard" className="btn btn-primary btn-lg">
+            <div className="hero-cta">
+              <Link to="/dashboard" className="btn btn-primary btn-lg hero-cta-btn">
                 <Brain size={18} />
                 Start Learning
                 <ArrowRight size={16} />
               </Link>
-              <Link to="/ide" className="btn btn-secondary btn-lg">
+              <Link to="/ide" className="btn btn-secondary btn-lg hero-cta-btn">
                 <Play size={16} />
                 Explore Demo
               </Link>
             </div>
 
-            <div className="hero-stats animate-slideUp" style={{ animationDelay: '0.3s' }}>
+            <div className="hero-stats" ref={statsRef}>
               <div className="hero-stat">
-                <span className="hero-stat-num">9+</span>
+                <span className="hero-stat-num">{stat1}+</span>
                 <span className="hero-stat-label">Misconceptions Detected</span>
               </div>
               <div className="hero-stat-divider" />
               <div className="hero-stat">
-                <span className="hero-stat-num">68%</span>
+                <span className="hero-stat-num">{stat2}%</span>
                 <span className="hero-stat-label">Mastery Improvement</span>
               </div>
               <div className="hero-stat-divider" />
               <div className="hero-stat">
-                <span className="hero-stat-num">7 days</span>
+                <span className="hero-stat-num">{stat3} days</span>
                 <span className="hero-stat-label">Learning Streak</span>
               </div>
             </div>
           </div>
 
-          {/* IDE Preview */}
-          <div className="hero-ide-preview animate-slideUp" style={{ animationDelay: '0.25s' }}>
+          {/* IDE Preview with 3D Tilt */}
+          <div className="hero-ide-preview" ref={heroIdeRef}>
             <IDEPreview />
           </div>
         </div>
       </section>
 
-      {/* Learning Loop */}
+      {/* Learning Loop Section */}
       <section className="loop-section" id="how-it-works">
         <div className="container">
           <div className="section-header">
@@ -138,7 +297,47 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* GROWW-STYLE PINNED SHOWCASE SECTION */}
+      <section className="groww-pinned-section" ref={pinnedSectionRef} id="showcase">
+        <div className="container">
+          <div className="groww-section-header">
+            <span className="section-label">INTERACTIVE SHOWCASE</span>
+            <h2>Experience CodeMind as You Scroll</h2>
+            <p>See how real-time error monitoring, Socratic chat, and knowledge tracking interact seamlessly.</p>
+          </div>
+
+          <div className="groww-showcase-grid">
+            {/* Left Column: Scrollable Steps */}
+            <div className="groww-steps-column">
+              {growwShowcaseSteps.map((step, index) => (
+                <div
+                  key={step.id}
+                  className={`pinned-text-step ${activeStep === index ? 'step-active' : ''}`}
+                >
+                  <span className="step-tag">{step.tag}</span>
+                  <h3 className="step-title">{step.title}</h3>
+                  <p className="step-desc">{step.desc}</p>
+                  <div className="step-indicator-bar">
+                    <div
+                      className="step-progress-fill"
+                      style={{ width: activeStep === index ? '100%' : '0%' }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right Column: Fixed Pinned Visual */}
+            <div className="groww-visual-column">
+              <div className="groww-pinned-visual" ref={pinnedVisualRef}>
+                <GrowwVisualMockup activeStep={activeStep} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
       <section className="features-section" id="features">
         <div className="container">
           <div className="section-header">
@@ -148,11 +347,10 @@ export function LandingPage() {
           </div>
 
           <div className="features-grid">
-            {features.map((f, i) => (
+            {features.map((f) => (
               <div
                 key={f.number}
                 className={`feature-card card card-${f.color === 'pink' ? 'pink' : f.color}`}
-                style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="feature-number">{f.number}</div>
                 <div className={`feature-icon-wrapper feature-icon-${f.color}`}>
@@ -200,7 +398,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA Section */}
       <section className="cta-section">
         <div className="container">
           <div className="cta-card">
@@ -241,6 +439,101 @@ export function LandingPage() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+// Fixed Right-side Dynamic Visual Component for Groww Pinned Showcase
+function GrowwVisualMockup({ activeStep }) {
+  return (
+    <div className="groww-mockup-card">
+      <div className="mockup-header">
+        <div className="mockup-dots">
+          <span className="dot dot-red" />
+          <span className="dot dot-yellow" />
+          <span className="dot dot-green" />
+        </div>
+        <span className="mockup-header-title">
+          {activeStep === 0 && 'Live IDE Execution Monitor'}
+          {activeStep === 1 && 'Socratic AI Tutor Drawer'}
+          {activeStep === 2 && 'Knowledge Graph Mastery Tracker'}
+        </span>
+        <span className={`badge badge-${activeStep === 0 ? 'orange' : activeStep === 1 ? 'teal' : 'green'}`} style={{ marginLeft: 'auto' }}>
+          {growwShowcaseSteps[activeStep].badge}
+        </span>
+      </div>
+
+      <div className="mockup-content">
+        {/* Step 0: Real-time Code Monitor */}
+        {activeStep === 0 && (
+          <div className="mockup-step-view animate-fadeIn">
+            <div className="mockup-code-window">
+              <div className="code-line"><span className="code-kw">numbers</span> = [10, 20, 30, 40, 50]</div>
+              <div className="code-line"><span className="code-kw">for</span> i <span className="code-kw">in</span> <span className="code-fn">range</span>(<span className="code-err">6</span>):</div>
+              <div className="code-line code-indent"><span className="code-fn">print</span>(numbers[i])</div>
+            </div>
+            <div className="mockup-alert-box">
+              <div className="alert-header">
+                <AlertTriangle size={16} color="var(--orange)" />
+                <span>IndexError: list index out of range</span>
+              </div>
+              <p className="alert-desc">Pattern match: Attempting index 5 in 5-element array.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: Socratic AI Drawer */}
+        {activeStep === 1 && (
+          <div className="mockup-step-view animate-fadeIn">
+            <div className="socratic-chat-mock">
+              <div className="chat-bubble chat-ai">
+                <div className="chat-avatar"><Brain size={12} color="white" /></div>
+                <div className="chat-text">
+                  "How many elements are inside your <code>numbers</code> array?"
+                </div>
+              </div>
+              <div className="chat-bubble chat-user">
+                <div className="chat-text">"There are 5 elements."</div>
+              </div>
+              <div className="chat-bubble chat-ai">
+                <div className="chat-avatar"><Brain size={12} color="white" /></div>
+                <div className="chat-text">
+                  "If indexing starts at <strong>0</strong>, what is the valid index range?"
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Knowledge Graph */}
+        {activeStep === 2 && (
+          <div className="mockup-step-view animate-fadeIn">
+            <div className="knowledge-mock">
+              <div className="concept-row">
+                <div className="concept-info">
+                  <span className="concept-name">Array Index Boundaries</span>
+                  <span className="badge badge-teal">92% Mastered</span>
+                </div>
+                <div className="concept-bar"><div className="concept-fill" style={{ width: '92%' }} /></div>
+              </div>
+              <div className="concept-row">
+                <div className="concept-info">
+                  <span className="concept-name">Loop Boundary Conditions</span>
+                  <span className="badge badge-teal">85% Mastered</span>
+                </div>
+                <div className="concept-bar"><div className="concept-fill" style={{ width: '85%' }} /></div>
+              </div>
+              <div className="mastery-unlocked-card">
+                <Award size={20} color="var(--teal)" />
+                <div>
+                  <div className="unlocked-title">Mastery Badge Unlocked! 🎉</div>
+                  <div className="unlocked-subtitle">Array Boundary Expert · Micro-challenge unlocked</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -315,7 +608,7 @@ function MisconceptionPreview() {
           { label: 'Error Frequency', pct: 80 },
           { label: 'Recurring Pattern', pct: 70 },
           { label: 'Debugging Behavior', pct: 80 },
-        ].map(s => (
+        ].map((s) => (
           <div key={s.label}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{s.label}</span>
