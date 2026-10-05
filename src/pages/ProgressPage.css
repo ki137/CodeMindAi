@@ -1,12 +1,12 @@
-.progress-page { overflow: hidden; }
+.progress-page { overflow: hidden; background: var(--bg-warm); }
 
 .progress-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: var(--space-4) var(--space-6);
-  border-bottom: 1px solid var(--border-light);
-  background: var(--bg-card);
+  border-bottom: 3px solid #000000;
+  background: #FFFFFF;
   flex-shrink: 0;
   gap: var(--space-4);
 }
@@ -21,31 +21,33 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.75rem;
-  color: var(--text-muted);
+  font-size: 0.8125rem;
+  color: #000000;
+  font-weight: 800;
 }
 
 .legend-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
+  border: 2px solid #000000;
   flex-shrink: 0;
 }
 
 .graph-main {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 320px;
   flex: 1;
   overflow: hidden;
 }
 
 .graph-container {
-  background: var(--bg-warm);
+  background: #FAFAFA;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 1px solid var(--border-light);
+  border-right: 3px solid #000000;
 }
 
 .graph-container svg { display: block; }
@@ -54,7 +56,8 @@
 .graph-side-panel {
   padding: var(--space-5);
   overflow-y: auto;
-  background: var(--bg-card);
+  background: #FFFFFF;
+  border-left: 3px solid #000000;
 }
 
 /* Concept Detail */
@@ -72,23 +75,27 @@
   align-items: center;
   gap: 8px;
   padding: var(--space-3);
-  background: var(--bg-elevated);
+  background: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
   border-radius: var(--radius-lg);
 }
 
-.detail-stat-val { font-size: 1rem; font-weight: 700; color: var(--text-dark); }
-.detail-stat-lbl { font-size: 0.7rem; color: var(--text-faint); }
+.detail-stat-val { font-size: 1.1rem; font-weight: 900; color: #000000; }
+.detail-stat-lbl { font-size: 0.75rem; color: #666666; font-weight: 700; }
 
 .detail-bottleneck {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
-  background: var(--orange-10);
+  background: var(--yellow);
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
   border-radius: var(--radius-md);
   font-size: 0.8125rem;
-  color: var(--orange-dark);
-  font-weight: 600;
+  color: #000000;
+  font-weight: 800;
 }
 
 /* Graph Summary */
@@ -100,62 +107,19 @@
   gap: var(--space-2);
 }
 
-.summary-stat {
+.summary-stat-row {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 10px;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  background: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  border-radius: var(--radius-md);
+  font-weight: 800;
 }
 
-.summary-stat-teal { background: var(--teal-10); color: var(--teal); }
-.summary-stat-yellow { background: var(--yellow-10); color: #a07c00; }
-.summary-stat-orange { background: var(--orange-10); color: var(--orange-dark); }
-
-.summary-stat-val { font-size: 1.25rem; font-weight: 800; }
-.summary-stat-lbl { font-size: 0.75rem; opacity: 0.8; }
-
-.summary-bottleneck {
-  padding: var(--space-4);
-  background: var(--bg-elevated);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--border-light);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.summary-bottleneck-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--orange);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.summary-bottleneck-name {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  color: var(--text-dark);
-}
-
-.summary-tip {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 10px 12px;
-  background: var(--teal-10);
-  border-radius: var(--radius-lg);
-  font-size: 0.8rem;
-  color: var(--teal);
-  line-height: 1.5;
-}
-
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .graph-main { grid-template-columns: 1fr; }
-  .graph-side-panel { display: none; }
-  .graph-legend { display: none; }
+  .graph-side-panel { border-left: none; border-top: 3px solid #000000; }
 }

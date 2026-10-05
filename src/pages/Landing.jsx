@@ -1,11 +1,16 @@
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Brain, GitBranch, Target, ArrowRight, Play,
   AlertTriangle, MessageCircle, Sparkles, ChevronRight,
-  Code2, CheckCircle
+  Code2, CheckCircle, Flame, Award, Zap, Terminal, ShieldCheck
 } from 'lucide-react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from '../components/Layout/Navbar';
 import './Landing.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const features = [
   {
@@ -47,122 +52,313 @@ const learningLoop = [
   { label: 'Mastery', icon: CheckCircle, color: 'teal' },
 ];
 
+const growwShowcaseSteps = [
+  {
+    id: 1,
+    tag: '01 · REAL-TIME PATTERN MONITORING',
+    title: 'Code Mindfully. Detect Cognitive Gaps.',
+    desc: 'As you write and execute code in our IDE, CodeMind analyzes not just runtime errors, but the cognitive path that led to them.',
+    badge: 'IndexError Pattern Detected',
+    badgeColor: 'orange',
+  },
+  {
+    id: 2,
+    tag: '02 · SOCRATIC INTERACTIVE CHAT',
+    title: 'Guided Questions, Not Direct Answers.',
+    desc: 'The Socratic AI Tutor prompts you with targeted micro-questions that challenge your assumptions until you discover the fix yourself.',
+    badge: 'Socratic Tutor Active',
+    badgeColor: 'teal',
+  },
+  {
+    id: 3,
+    tag: '03 · CONCEPT KNOWLEDGE GRAPH',
+    title: 'Track Skill Mastery in Real Time.',
+    desc: 'Watch your mental model evolve as detected misconceptions transform into verified programming concepts on your personalized graph.',
+    badge: 'Mastery Score +25%',
+    badgeColor: 'green',
+  },
+];
+
 export function LandingPage() {
+  const landingRef = useRef(null);
+  const heroRef = useRef(null);
+  const heroIdeRef = useRef(null);
+  const pinnedSectionRef = useRef(null);
+  const pinnedVisualRef = useRef(null);
+  const statsRef = useRef(null);
+  const [activeStep, setActiveStep] = useState(0);
+
+  // Counter state values
+  const [stat1, setStat1] = useState(0);
+  const [stat2, setStat2] = useState(0);
+  const [stat3, setStat3] = useState(0);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Hero Entrance Animation
+      const heroTimeline = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      heroTimeline
+        .fromTo('.hero-badge', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.8 })
+        .fromTo('.hero-title-line', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15 }, '-=0.5')
+        .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
+        .fromTo('.hero-cta-btn', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1 }, '-=0.3');
+
+      // 2. Hero IDE Parallax Scroll Effect (subtle translateY without changing opacity)
+      if (heroIdeRef.current) {
+        gsap.to(heroIdeRef.current, {
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+          y: 60,
+          scale: 0.98,
+        });
+      }
+
+      // 3. Counter ScrollTrigger
+      ScrollTrigger.create({
+        trigger: statsRef.current,
+        start: 'top 85%',
+        once: true,
+        onEnter: () => {
+          const obj = { s1: 0, s2: 0, s3: 0 };
+          gsap.to(obj, {
+            s1: 9,
+            s2: 68,
+            s3: 7,
+            duration: 2,
+            ease: 'power2.out',
+            onUpdate: () => {
+              setStat1(Math.floor(obj.s1));
+              setStat2(Math.floor(obj.s2));
+              setStat3(Math.floor(obj.s3));
+            },
+          });
+        },
+      });
+
+      // 4. Learning Loop Items Reveal
+      gsap.fromTo(
+        '.loop-step',
+        { opacity: 0, y: 30, scale: 0.8 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.6,
+          stagger: 0.1,
+          scrollTrigger: {
+            trigger: '.loop-section',
+            start: 'top 80%',
+          },
+        }
+      );
+
+      // 5. Groww-style Pinned Scroll Showcase (Sticky Card Pinning)
+      const steps = gsap.utils.toArray('.pinned-text-step');
+      steps.forEach((step, index) => {
+        ScrollTrigger.create({
+          trigger: step,
+          start: 'top 60%',
+          end: 'bottom 40%',
+          onEnter: () => setActiveStep(index),
+          onEnterBack: () => setActiveStep(index),
+        });
+      });
+
+
+      // 7. Demo CTA Card Reveal
+      gsap.fromTo(
+        '.cta-card',
+        { opacity: 0, scale: 0.95, y: 30 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'back.out(1.4)',
+          scrollTrigger: {
+            trigger: '.cta-section',
+            start: 'top 80%',
+          },
+        }
+      );
+
+    }, landingRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <div className="landing-page">
+    <div className="landing-page" ref={landingRef}>
       <Navbar />
 
       {/* Hero */}
-      <section className="hero-section">
+      <section className="hero-section" ref={heroRef}>
         <div className="hero-bg-pattern" />
         <div className="container">
           <div className="hero-content">
-            <div className="hero-badge animate-fadeIn">
+            <div className="hero-badge">
               <span className="status-dot" />
               <span>BYTEATHON 2026 — BYT03</span>
               <span className="hero-badge-sep">·</span>
               <span>Uncover Programming Misconceptions</span>
             </div>
 
-            <h1 className="hero-title animate-slideUp">
-              Understand How You{' '}
-              <span className="hero-title-teal">Think</span>.
+            <h1 className="hero-title">
+              <span className="hero-title-line">Understand How You</span>
               <br />
-              Not Just How You{' '}
-              <span className="hero-title-orange">Code</span>.
+              <span className="hero-title-line hero-title-teal">Think</span>
+              <span className="hero-title-line">. Not Just How You </span>
+              <span className="hero-title-line hero-title-orange">Code</span>.
             </h1>
 
-            <p className="hero-subtitle animate-slideUp" style={{ animationDelay: '0.1s' }}>
+            <p className="hero-subtitle">
               An intelligent coding environment that detects hidden programming misconceptions
               and helps students build real conceptual understanding through Socratic AI guidance.
             </p>
 
-            <div className="hero-cta animate-slideUp" style={{ animationDelay: '0.2s' }}>
-              <Link to="/dashboard" className="btn btn-primary btn-lg">
+            <div className="hero-cta">
+              <Link to="/dashboard" className="btn btn-primary btn-lg hero-cta-btn">
                 <Brain size={18} />
                 Start Learning
                 <ArrowRight size={16} />
               </Link>
-              <Link to="/ide" className="btn btn-secondary btn-lg">
+              <Link to="/ide" className="btn btn-secondary btn-lg hero-cta-btn">
                 <Play size={16} />
                 Explore Demo
               </Link>
             </div>
 
-            <div className="hero-stats animate-slideUp" style={{ animationDelay: '0.3s' }}>
+            <div className="hero-stats" ref={statsRef}>
               <div className="hero-stat">
-                <span className="hero-stat-num">9+</span>
+                <span className="hero-stat-num">{stat1}+</span>
                 <span className="hero-stat-label">Misconceptions Detected</span>
               </div>
               <div className="hero-stat-divider" />
               <div className="hero-stat">
-                <span className="hero-stat-num">68%</span>
+                <span className="hero-stat-num">{stat2}%</span>
                 <span className="hero-stat-label">Mastery Improvement</span>
               </div>
               <div className="hero-stat-divider" />
               <div className="hero-stat">
-                <span className="hero-stat-num">7 days</span>
+                <span className="hero-stat-num">{stat3} days</span>
                 <span className="hero-stat-label">Learning Streak</span>
               </div>
             </div>
           </div>
 
-          {/* IDE Preview */}
-          <div className="hero-ide-preview animate-slideUp" style={{ animationDelay: '0.25s' }}>
+          {/* IDE Preview with 3D Tilt */}
+          <div className="hero-ide-preview" ref={heroIdeRef}>
             <IDEPreview />
           </div>
         </div>
       </section>
 
-      {/* Learning Loop */}
+      {/* Infinite Horizontal Marquee Learning Loop Section */}
       <section className="loop-section" id="how-it-works">
         <div className="container">
           <div className="section-header">
-            <span className="section-label">The Learning Loop</span>
+            <span className="section-label">THE LEARNING LOOP</span>
             <h2>How CodeMind Works</h2>
             <p>Every coding session follows an intelligent learning cycle designed to build genuine understanding.</p>
           </div>
-          <div className="loop-steps">
-            {learningLoop.map((step, i) => (
-              <div key={step.label} className="loop-step">
+        </div>
+
+        <div className="loop-marquee-container">
+          <div className="loop-marquee-track">
+            {[...learningLoop, ...learningLoop, ...learningLoop, ...learningLoop].map((step, i) => (
+              <div key={`${step.label}-${i}`} className="loop-step">
                 <div className={`loop-step-icon loop-icon-${step.color}`}>
                   <step.icon size={20} />
                 </div>
                 <span className="loop-step-label">{step.label}</span>
-                {i < learningLoop.length - 1 && (
-                  <ChevronRight size={16} color="var(--text-faint)" className="loop-arrow" />
-                )}
+                <ChevronRight size={16} color="#000000" className="loop-arrow" />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
+      {/* GROWW-STYLE PINNED SHOWCASE SECTION */}
+      <section className="groww-pinned-section" ref={pinnedSectionRef} id="showcase">
+        <div className="container">
+          <div className="groww-section-header">
+            <span className="section-label">INTERACTIVE SHOWCASE</span>
+            <h2>Experience CodeMind as You Scroll</h2>
+            <p>See how real-time error monitoring, Socratic chat, and knowledge tracking interact seamlessly.</p>
+          </div>
+
+          <div className="groww-showcase-grid">
+            {/* Left Column: Scrollable Steps */}
+            <div className="groww-steps-column">
+              {growwShowcaseSteps.map((step, index) => (
+                <div
+                  key={step.id}
+                  className={`pinned-text-step ${activeStep === index ? 'step-active' : ''}`}
+                >
+                  <span className="step-tag">{step.tag}</span>
+                  <h3 className="step-title">{step.title}</h3>
+                  <p className="step-desc">{step.desc}</p>
+                  <div className="step-indicator-bar">
+                    <div
+                      className="step-progress-fill"
+                      style={{ width: activeStep === index ? '100%' : '0%' }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right Column: Fixed Pinned Visual */}
+            <div className="groww-visual-column">
+              <div className="groww-pinned-visual" ref={pinnedVisualRef}>
+                <GrowwVisualMockup activeStep={activeStep} />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Neo-Brutalist Scroll Stack Features Section */}
       <section className="features-section" id="features">
         <div className="container">
           <div className="section-header">
-            <span className="section-label">Core Features</span>
+            <span className="section-label">CORE FEATURES</span>
             <h2>We Don't Just Detect Wrong Code.</h2>
             <p className="features-subtitle">We detect wrong understanding.</p>
           </div>
 
-          <div className="features-grid">
+          <div className="scroll-stack-wrapper">
             {features.map((f, i) => (
               <div
                 key={f.number}
-                className={`feature-card card card-${f.color === 'pink' ? 'pink' : f.color}`}
-                style={{ animationDelay: `${i * 0.1}s` }}
+                className="scroll-stack-card"
+                style={{
+                  top: `calc(110px + ${i * 32}px)`,
+                  zIndex: i + 1,
+                }}
               >
-                <div className="feature-number">{f.number}</div>
-                <div className={`feature-icon-wrapper feature-icon-${f.color}`}>
-                  <f.icon size={22} />
+                <div className="stack-card-header">
+                  <div className="stack-card-number">{f.number}</div>
+                  <div className="stack-card-icon">
+                    <f.icon size={24} color="#FFFFFF" />
+                  </div>
                 </div>
-                <h3 className="feature-title">{f.title}</h3>
-                <p className="feature-desc">{f.description}</p>
-                <Link to="/ide" className={`feature-link feature-link-${f.color}`}>
-                  See it in action <ArrowRight size={14} />
-                </Link>
+
+                <div className="stack-card-body">
+                  <h3 className="stack-card-title">{f.title}</h3>
+                  <p className="stack-card-desc">{f.description}</p>
+                </div>
+
+                <div className="stack-card-footer">
+                  <Link to="/ide" className="stack-card-btn">
+                    SEE IT IN ACTION
+                    <ArrowRight size={16} />
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
@@ -200,7 +396,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* CTA Section */}
       <section className="cta-section">
         <div className="container">
           <div className="cta-card">
@@ -245,6 +441,101 @@ export function LandingPage() {
   );
 }
 
+// Fixed Right-side Dynamic Visual Component for Groww Pinned Showcase
+function GrowwVisualMockup({ activeStep }) {
+  return (
+    <div className="groww-mockup-card">
+      <div className="mockup-header">
+        <div className="mockup-dots">
+          <span className="dot dot-red" />
+          <span className="dot dot-yellow" />
+          <span className="dot dot-green" />
+        </div>
+        <span className="mockup-header-title">
+          {activeStep === 0 && 'Live IDE Execution Monitor'}
+          {activeStep === 1 && 'Socratic AI Tutor Drawer'}
+          {activeStep === 2 && 'Knowledge Graph Mastery Tracker'}
+        </span>
+        <span className={`badge badge-${activeStep === 0 ? 'orange' : activeStep === 1 ? 'teal' : 'green'}`} style={{ marginLeft: 'auto' }}>
+          {growwShowcaseSteps[activeStep].badge}
+        </span>
+      </div>
+
+      <div className="mockup-content">
+        {/* Step 0: Real-time Code Monitor */}
+        {activeStep === 0 && (
+          <div className="mockup-step-view animate-fadeIn">
+            <div className="mockup-code-window">
+              <div className="code-line"><span className="code-kw">numbers</span> = [10, 20, 30, 40, 50]</div>
+              <div className="code-line"><span className="code-kw">for</span> i <span className="code-kw">in</span> <span className="code-fn">range</span>(<span className="code-err">6</span>):</div>
+              <div className="code-line code-indent"><span className="code-fn">print</span>(numbers[i])</div>
+            </div>
+            <div className="mockup-alert-box">
+              <div className="alert-header">
+                <AlertTriangle size={16} color="var(--orange)" />
+                <span>IndexError: list index out of range</span>
+              </div>
+              <p className="alert-desc">Pattern match: Attempting index 5 in 5-element array.</p>
+            </div>
+          </div>
+        )}
+
+        {/* Step 1: Socratic AI Drawer */}
+        {activeStep === 1 && (
+          <div className="mockup-step-view animate-fadeIn">
+            <div className="socratic-chat-mock">
+              <div className="chat-bubble chat-ai">
+                <div className="chat-avatar"><Brain size={12} color="white" /></div>
+                <div className="chat-text">
+                  "How many elements are inside your <code>numbers</code> array?"
+                </div>
+              </div>
+              <div className="chat-bubble chat-user">
+                <div className="chat-text">"There are 5 elements."</div>
+              </div>
+              <div className="chat-bubble chat-ai">
+                <div className="chat-avatar"><Brain size={12} color="white" /></div>
+                <div className="chat-text">
+                  "If indexing starts at <strong>0</strong>, what is the valid index range?"
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Knowledge Graph */}
+        {activeStep === 2 && (
+          <div className="mockup-step-view animate-fadeIn">
+            <div className="knowledge-mock">
+              <div className="concept-row">
+                <div className="concept-info">
+                  <span className="concept-name">Array Index Boundaries</span>
+                  <span className="badge badge-teal">92% Mastered</span>
+                </div>
+                <div className="concept-bar"><div className="concept-fill" style={{ width: '92%' }} /></div>
+              </div>
+              <div className="concept-row">
+                <div className="concept-info">
+                  <span className="concept-name">Loop Boundary Conditions</span>
+                  <span className="badge badge-teal">85% Mastered</span>
+                </div>
+                <div className="concept-bar"><div className="concept-fill" style={{ width: '85%' }} /></div>
+              </div>
+              <div className="mastery-unlocked-card">
+                <Award size={20} color="var(--teal)" />
+                <div>
+                  <div className="unlocked-title">Mastery Badge Unlocked! 🎉</div>
+                  <div className="unlocked-subtitle">Array Boundary Expert · Micro-challenge unlocked</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function IDEPreview() {
   return (
     <div className="ide-preview">
@@ -255,42 +546,58 @@ function IDEPreview() {
           <span className="dot dot-green" />
         </div>
         <span className="ide-preview-title">main.py — CodeMind AI</span>
-        <span className="badge badge-orange" style={{ marginLeft: 'auto', fontSize: '0.65rem' }}>
-          <AlertTriangle size={10} /> Error Detected
-        </span>
+        <div className="ide-error-banner-tag">
+          <AlertTriangle size={12} />
+          <span>Error Detected</span>
+        </div>
       </div>
       <div className="ide-preview-body">
         <div className="ide-preview-editor">
-          <pre className="code-block" style={{ fontSize: '0.75rem', margin: 0, borderRadius: 0 }}>
-            <span className="code-variable">numbers</span>{' = ['}
-            <span className="code-number">10</span>, <span className="code-number">20</span>, <span className="code-number">30</span>, <span className="code-number">40</span>, <span className="code-number">50</span>{']'}
+          <pre className="code-block" style={{ fontSize: '0.8125rem', margin: 0, borderRadius: 0, background: '#0C0F17', color: '#FFFFFF', lineHeight: 1.8 }}>
+            <span className="code-variable" style={{ color: '#93C5FD' }}>numbers</span>{' = ['}
+            <span className="code-number" style={{ color: '#6EE7B7' }}>10</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>20</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>30</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>40</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>50</span>{']'}
             {'\n\n'}
-            <span className="code-keyword">for</span>{' i '}
-            <span className="code-keyword">in</span>{' '}
-            <span className="code-function">range</span>{'('}
-            <span className="code-error">6</span>{'): '}
-            <span className="code-comment">  ← Issue here</span>
+            <span className="code-keyword" style={{ color: '#F472B6', fontWeight: 800 }}>for</span>{' i '}
+            <span className="code-keyword" style={{ color: '#F472B6', fontWeight: 800 }}>in</span>{' '}
+            <span className="code-function" style={{ color: '#60A5FA', fontWeight: 700 }}>range</span>{'('}
+            <span className="code-error" style={{ background: '#EF4444', color: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontWeight: 900 }}>6</span>{'): '}
+            <span className="code-comment" style={{ color: '#F87171', fontWeight: 600 }}>  ← Issue here</span>
             {'\n    '}
-            <span className="code-function">print</span>{'(numbers[i])'}
+            <span className="code-function" style={{ color: '#60A5FA', fontWeight: 700 }}>print</span>{'(numbers[i])'}
           </pre>
         </div>
         <div className="ide-preview-output">
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-faint)', marginBottom: 6 }}>OUTPUT</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#e2e8f0', lineHeight: 1.8 }}>
+          <div style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 800, letterSpacing: '0.05em', marginBottom: 8 }}>OUTPUT CONSOLE</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8125rem', color: '#E2E8F0', lineHeight: 1.8 }}>
             10{'\n'}20{'\n'}30{'\n'}40{'\n'}50
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#ff5555', marginTop: 6, padding: '6px 8px', background: 'rgba(255,85,85,0.1)', borderRadius: 6, borderLeft: '2px solid #ff5555' }}>
-            IndexError: list index out of range
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.78rem',
+            color: '#FEF2F2',
+            fontWeight: 700,
+            marginTop: 10,
+            padding: '8px 10px',
+            background: 'rgba(239, 68, 68, 0.25)',
+            borderRadius: 6,
+            border: '2px solid #EF4444',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6
+          }}>
+            <AlertTriangle size={14} color="#EF4444" style={{ flexShrink: 0 }} />
+            <span>IndexError: list index out of range</span>
           </div>
         </div>
       </div>
       <div className="ide-preview-ai">
         <div className="ide-preview-ai-header">
-          <div className="status-dot" />
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--teal)' }}>CodeMind Socratic Tutor</span>
+          <div className="status-dot" style={{ background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+          <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#38BDF8' }}>CodeMind Socratic Tutor</span>
+          <span style={{ fontSize: '0.7rem', background: '#0284C7', color: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontWeight: 700, marginLeft: 'auto' }}>AI GUIDE</span>
         </div>
         <div className="ide-preview-ai-msg">
-          💬 &quot;How many elements are inside your array?&quot;
+          💬 &quot;How many elements are inside your array? Look at the range bound vs the maximum valid index.&quot;
         </div>
       </div>
     </div>
@@ -315,7 +622,7 @@ function MisconceptionPreview() {
           { label: 'Error Frequency', pct: 80 },
           { label: 'Recurring Pattern', pct: 70 },
           { label: 'Debugging Behavior', pct: 80 },
-        ].map(s => (
+        ].map((s) => (
           <div key={s.label}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
               <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{s.label}</span>

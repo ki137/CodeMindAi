@@ -29,7 +29,7 @@ export const mockConcepts = [
   { id: 'functions', name: 'Functions', mastery: 76, status: 'mastered', mistakes: 6, lastAttempted: '2026-09-23', category: 'Abstractions' },
   { id: 'arrays', name: 'Arrays', mastery: 58, status: 'developing', mistakes: 12, lastAttempted: '2026-09-27', category: 'Data Structures' },
   { id: 'indexing', name: 'Indexing', mastery: 52, status: 'developing', mistakes: 14, lastAttempted: '2026-09-27', category: 'Data Structures' },
-  { id: 'index-boundaries', name: 'Index Boundaries', mastery: 35, status: 'needs-attention', mistakes: 18, lastAttempted: '2026-09-27', category: 'Data Structures', isCurrent: true },
+  { id: 'index-boundaries', name: 'Index Boundaries', mastery: 35, status: 'needs-attention', mistakes: 18, lastAttempted: '2026-09-27', category: 'Data Structures', isCurrent: false },
   { id: 'scope', name: 'Scope', mastery: 65, status: 'developing', mistakes: 9, lastAttempted: '2026-09-21', category: 'Abstractions' },
   { id: 'recursion', name: 'Recursion', mastery: 42, status: 'developing', mistakes: 11, lastAttempted: '2026-09-19', category: 'Abstractions' },
   { id: 'data-structures', name: 'Data Structures', mastery: 35, status: 'needs-attention', mistakes: 16, lastAttempted: '2026-09-18', category: 'Advanced' },

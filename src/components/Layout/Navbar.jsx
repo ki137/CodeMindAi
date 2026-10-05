@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   Brain, Code2, Target, BarChart3, User, Zap, Flame, ChevronDown,
-  Settings, BookOpen, LogOut, Menu, X, Sparkles
+  Settings, BookOpen, LogOut, Menu, X, Sparkles, LayoutDashboard
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import './Navbar.css';
@@ -16,12 +16,38 @@ const navLinks = [
 
 export function Navbar() {
   const location = useLocation();
-  const { state } = useApp();
+  const { state, dispatch, addToast } = useApp();
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { student } = state;
+  const profileRef = useRef(null);
+  const { student, isAuthenticated } = state;
 
   const isLanding = location.pathname === '/';
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSignOut = () => {
+    setProfileOpen(false);
+    dispatch({ type: 'LOGOUT' });
+    addToast({
+      type: 'info',
+      title: 'Signed Out',
+      message: 'You have been signed out. Click Sign In anytime to log back in.',
+    });
+  };
+
+  const handleOpenAuth = () => {
+    dispatch({ type: 'OPEN_AUTH_MODAL' });
+  };
 
   return (
     <nav className={`navbar ${isLanding ? 'navbar-landing' : 'navbar-app'}`}>
@@ -63,36 +89,48 @@ export function Navbar() {
 
         {/* Right side */}
         <div className="navbar-right">
-          {!isLanding && (
+          {isAuthenticated ? (
             <>
               {/* XP */}
-              <div className="xp-badge">
+              <div className="xp-badge" title="Total XP Earned">
                 <Zap size={13} color="var(--yellow-dark, #c9a800)" />
-                <span>{student.totalXP} XP</span>
+                <span>{student?.totalXP || 1240} XP</span>
               </div>
 
               {/* Streak */}
-              <div className="streak-badge">
+              <div className="streak-badge" title="Daily Streak">
                 <Flame size={13} color="var(--orange)" />
-                <span>{student.streak}</span>
+                <span>{student?.streak || 7}d</span>
               </div>
 
-              {/* Profile */}
-              <div className="profile-menu-wrapper">
+              {/* Profile Icon with Dropdown on the Top Right */}
+              <div className="profile-menu-wrapper" ref={profileRef}>
                 <button
                   className="profile-btn"
                   onClick={() => setProfileOpen(!profileOpen)}
                   aria-label="Profile menu"
+                  id="profile-menu-button"
                 >
                   <div className="avatar">
-                    {student.name.charAt(0)}
+                    {student?.name ? student.name.charAt(0).toUpperCase() : 'U'}
                   </div>
-                  <span className="profile-name">{student.name}</span>
+                  <span className="profile-name">{student?.name || 'Learner'}</span>
                   <ChevronDown size={14} color="var(--text-muted)" />
                 </button>
 
                 {profileOpen && (
                   <div className="profile-dropdown" onClick={() => setProfileOpen(false)}>
+                    <div style={{ padding: '8px 12px', borderBottom: '2px solid #000000', marginBottom: 4 }}>
+                      <div style={{ fontWeight: 800, fontSize: '0.875rem', color: '#000000' }}>
+                        {student?.name || 'Alex'}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        {student?.email || 'alex@codemind.ai'}
+                      </div>
+                    </div>
+                    <Link to="/dashboard" className="dropdown-item">
+                      <LayoutDashboard size={14} /> Dashboard
+                    </Link>
                     <Link to="/profile" className="dropdown-item">
                       <User size={14} /> Profile
                     </Link>
@@ -100,22 +138,38 @@ export function Navbar() {
                       <Settings size={14} /> Settings
                     </Link>
                     <div className="dropdown-divider" />
-                    <Link to="/" className="dropdown-item dropdown-item-danger">
+                    <button
+                      type="button"
+                      className="dropdown-item dropdown-item-danger"
+                      onClick={handleSignOut}
+                      style={{ width: '100%', border: 'none', background: 'none', textAlign: 'left' }}
+                    >
                       <LogOut size={14} /> Sign Out
-                    </Link>
+                    </button>
                   </div>
                 )}
               </div>
             </>
-          )}
-
-          {isLanding && (
+          ) : (
             <>
-              <Link to="/dashboard" className="btn btn-ghost btn-sm">Sign In</Link>
-              <Link to="/dashboard" className="btn btn-primary btn-sm">
+              {/* Signed Out: Show Sign In and Get Started buttons */}
+              <button
+                type="button"
+                className="btn btn-ghost btn-sm"
+                onClick={handleOpenAuth}
+                id="sign-in-btn"
+              >
+                Sign In
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick={handleOpenAuth}
+                id="get-started-btn"
+              >
                 <Sparkles size={14} />
                 Get Started
-              </Link>
+              </button>
             </>
           )}
 
@@ -144,6 +198,19 @@ export function Navbar() {
               {label}
             </Link>
           ))}
+          {!isAuthenticated && (
+            <button
+              type="button"
+              className="btn btn-primary btn-sm"
+              style={{ marginTop: 8, width: '100%', justifyContent: 'center' }}
+              onClick={() => {
+                setMobileOpen(false);
+                handleOpenAuth();
+              }}
+            >
+              Sign In
+            </button>
+          )}
         </div>
       )}
     </nav>

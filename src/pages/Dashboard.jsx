@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import {
   Flame, Brain, Target, CheckCircle, TrendingUp, AlertTriangle,
-  ArrowRight, Code2, Clock, Star, Zap, BookOpen, Play
+  ArrowRight, Code2, Clock, Star, Zap, BookOpen, Play, X
 } from 'lucide-react';
 import { Navbar } from '../components/Layout/Navbar';
 import { ProgressBar } from '../components/UI/ProgressBar';
@@ -45,11 +45,10 @@ const historyColors = {
 };
 
 export function Dashboard() {
-  const { state } = useApp();
+  const { state, dispatch } = useApp();
   const { student, concepts, currentMisconception } = state;
 
   const inProgressConcepts = concepts.filter(c => c.status === 'developing' || c.status === 'needs-attention').slice(0, 3);
-  const currentBottleneck = concepts.find(c => c.isCurrent);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -125,22 +124,39 @@ export function Dashboard() {
               </div>
             </div>
 
-            {/* Bottleneck */}
-            {currentBottleneck && (
+            {/* Bottleneck / Error Detected Banner - not visible at first, only shown when an error/misconception is detected */}
+            {currentMisconception && (
               <div className="bottleneck-card card card-orange animate-slideUp">
-                <div className="bottleneck-header">
-                  <AlertTriangle size={16} color="var(--orange)" />
-                  <span className="section-label" style={{ color: 'var(--orange)' }}>Current Bottleneck</span>
+                <div className="bottleneck-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <AlertTriangle size={16} color="var(--orange)" />
+                    <span className="section-label" style={{ color: 'var(--orange)' }}>Error Detected: Conceptual Bottleneck</span>
+                  </div>
+                  <button
+                    onClick={() => dispatch({ type: 'SET_MISCONCEPTION', payload: null })}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 4,
+                      display: 'flex',
+                      alignItems: 'center',
+                      borderRadius: 4,
+                      color: 'var(--text-muted)'
+                    }}
+                    title="Dismiss"
+                    aria-label="Dismiss banner"
+                  >
+                    <X size={15} />
+                  </button>
                 </div>
-                <h3 className="bottleneck-concept">{currentMisconception?.misconception || currentBottleneck.name}</h3>
+                <h3 className="bottleneck-concept">{currentMisconception.misconception || currentMisconception.concept}</h3>
                 <p className="bottleneck-reason">
-                  {currentMisconception
-                    ? `AI detected with ${currentMisconception.confidence}% confidence: ${currentMisconception.description || 'Targeted guidance available in the IDE.'}`
-                    : 'Repeated out-of-range indexing errors detected across 4 attempts. CodeMind identified this as a possible conceptual gap.'}
+                  {currentMisconception.description || `AI detected with ${currentMisconception.confidence}% confidence: Targeted guidance available in the IDE.`}
                 </p>
                 <div className="bottleneck-evidence">
-                  <span className="badge badge-orange">{currentMisconception ? `${currentMisconception.confidence}% confidence` : '5 errors detected'}</span>
-                  <span className="badge badge-orange">{currentMisconception ? 'Misconception active' : '3 failed fixes'}</span>
+                  <span className="badge badge-orange">{currentMisconception.confidence}% confidence</span>
+                  <span className="badge badge-orange">Misconception active</span>
                 </div>
                 <Link to="/ide" className="btn btn-orange btn-sm" style={{ marginTop: 'var(--space-3)' }}>
                   Practice Now <ArrowRight size={14} />

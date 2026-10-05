@@ -10,8 +10,13 @@
   align-items: center;
   gap: 8px;
   font-size: 0.875rem;
-  font-weight: 600;
-  color: #a07c00;
+  font-weight: 800;
+  color: #000000;
+  background: var(--yellow);
+  padding: 6px 12px;
+  border: 2px solid #000000;
+  border-radius: 6px;
+  box-shadow: 2px 2px 0px #000000;
 }
 
 .detecting-steps {
@@ -25,7 +30,8 @@
   align-items: center;
   gap: 8px;
   font-size: 0.8125rem;
-  color: var(--text-muted);
+  color: #000000;
+  font-weight: 700;
 }
 
 .analysis-empty {
@@ -51,30 +57,36 @@
 
 .analysis-title {
   font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--orange);
+  color: #000000;
+  background: var(--yellow);
+  padding: 2px 8px;
+  border: 2px solid #000000;
+  border-radius: 4px;
 }
 
 .analysis-confidence { margin-left: auto; }
 
 .analysis-concept {
-  font-size: 1.125rem;
-  font-weight: 800;
-  color: var(--text-dark);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #000000;
   margin: 0;
 }
 
 .analysis-support-text {
-  font-size: 0.8125rem;
-  color: var(--text-muted);
+  font-size: 0.85rem;
+  color: #000000;
+  font-weight: 600;
   line-height: 1.6;
   margin: 0;
-  padding: 10px 12px;
-  background: var(--orange-10);
+  padding: 12px 14px;
+  background: #FFFFFF;
   border-radius: var(--radius-lg);
-  border-left: 3px solid var(--orange-20);
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
 }
 
 .signals-grid {
@@ -85,26 +97,27 @@
 
 .signal-item {
   display: grid;
-  grid-template-columns: 130px 1fr 36px;
+  grid-template-columns: 140px 1fr 40px;
   align-items: center;
   gap: var(--space-3);
+  font-weight: 700;
 }
 
 .signal-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  font-weight: 500;
+  font-size: 0.8125rem;
+  color: #000000;
+  font-weight: 700;
 }
 
 .signal-pct {
-  font-size: 0.8rem;
-  font-weight: 700;
-  color: var(--text-dark);
+  font-size: 0.8125rem;
+  font-weight: 900;
+  color: #000000;
   text-align: right;
 }
 
 .evidence-section {
-  border-top: 1px solid var(--border-light);
+  border-top: 3px solid #000000;
   padding-top: var(--space-3);
 }
 
@@ -118,12 +131,12 @@
   border: none;
   cursor: pointer;
   font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-dark);
+  font-weight: 800;
+  color: #000000;
   font-family: var(--font-sans);
 }
 
-.evidence-toggle:hover { color: var(--teal); }
+.evidence-toggle:hover { color: var(--primary); }
 
 .evidence-list {
   margin-top: var(--space-3);
@@ -137,14 +150,15 @@
   align-items: flex-start;
   gap: 8px;
   font-size: 0.8125rem;
-  color: var(--text-muted);
+  color: #000000;
+  font-weight: 600;
 }
 
 .evidence-dot {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background: var(--orange);
+  background: #000000;
   flex-shrink: 0;
   margin-top: 6px;
 }

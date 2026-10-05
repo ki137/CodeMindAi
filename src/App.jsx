@@ -16,6 +16,8 @@ import { ProfilePage } from './pages/ProfilePage';
 // Demo
 import { DemoModePanel } from './components/Demo/DemoMode';
 
+import { AuthModal } from './components/Auth/AuthModal';
+
 // Navbar already imported inside each page
 
 import { Play } from 'lucide-react';
@@ -43,6 +45,7 @@ function AppInner() {
       </Routes>
 
       <ToastContainer />
+      <AuthModal />
 
       {/* Demo / Judge Button */}
       {!isLanding && (
@@ -77,12 +80,45 @@ function AppInner() {
   );
 }
 
+import { aiTutorService } from './services/aiTutorService';
+
 // Simple Settings page inline
 function SettingsPage() {
+  const [apiKeyVal, setApiKeyVal] = useState(aiTutorService.getApiKey() || '');
+  const [saved, setSaved] = useState(false);
+
+  const handleSaveKey = () => {
+    aiTutorService.setApiKey(apiKeyVal.trim());
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  };
+
   return (
     <div className="page" style={{ paddingBottom: 48 }}>
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '32px 24px' }}>
         <h1 style={{ margin: '0 0 24px', fontSize: '1.75rem', fontWeight: 800 }}>Settings</h1>
+        
+        {/* API Key Banner Card */}
+        <div className="card" style={{ padding: 20, marginBottom: 24, borderLeft: '4px solid var(--teal)' }}>
+          <h3 style={{ margin: '0 0 8px', fontSize: '1.05rem', fontWeight: 700 }}>AI Tutor Access & API Key</h3>
+          <p style={{ margin: '0 0 16px', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+            Configure your AI access token for CodeMind AI chat service.
+          </p>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input
+              type="password"
+              className="input"
+              style={{ flex: 1, minWidth: 280, padding: '8px 12px', fontSize: '0.875rem', fontFamily: 'var(--font-mono)' }}
+              value={apiKeyVal}
+              placeholder="Paste your API key here..."
+              onChange={(e) => setApiKeyVal(e.target.value)}
+            />
+            <button className="btn btn-teal" onClick={handleSaveKey}>
+              {saved ? 'Saved!' : 'Save Key'}
+            </button>
+          </div>
+        </div>
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 20 }}>
           {[
             {

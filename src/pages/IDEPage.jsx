@@ -11,6 +11,7 @@ import { misconceptionService } from '../services/misconceptionService';
 import { AITutorPanel } from '../components/AITutor/AITutorPanel';
 import { ErrorAnalysisPanel } from '../components/Misconception/ErrorAnalysisPanel';
 import { MasteryUpdateBanner } from '../components/UI/MasteryUpdateBanner';
+import { INDEX_BOUNDARY_SCRIPT } from '../services/socraticScriptService';
 import './IDE.css';
 
 const DEFAULT_CODE = `numbers = [10, 20, 30, 40, 50]
@@ -73,13 +74,21 @@ export function IDEPage() {
 
   const {
     executionState, executionResult, currentMisconception,
-    aiTutorOpen, errorHistory, masteryUpdate
+    aiTutorOpen, errorHistory, masteryUpdate, conversation
   } = state;
 
-  // Sync code to context
+  // Sync editor code to context
   useEffect(() => {
     dispatch({ type: 'SET_CODE', payload: code });
   }, [code, dispatch]);
+
+  // Sync external code updates (e.g. from Socratic AI tutor option fixes) into editor
+  useEffect(() => {
+    if (state.currentCode && state.currentCode !== code) {
+      setCode(state.currentCode);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.currentCode]);
 
   // Load demo code when demo mode toggles on
   useEffect(() => {
@@ -103,8 +112,9 @@ export function IDEPage() {
         dispatch({ type: 'SET_EXECUTION_STATE', payload: 'error' });
         setOutputTab('output');
 
-        // Analyze for misconceptions after 3+ errors
-        if (errorHistory.length >= 2) {
+        const isIndexBoundaryError = result.error.includes('IndexError') || result.error.includes('out of range');
+
+        if (isIndexBoundaryError) {
           dispatch({ type: 'SET_EXECUTION_STATE', payload: 'analyzing' });
           dispatch({ type: 'SET_MISCONCEPTION_DETECTING', payload: true });
 
@@ -114,32 +124,76 @@ export function IDEPage() {
               [code]
             );
             dispatch({ type: 'SET_MISCONCEPTION_DETECTING', payload: false });
+            dispatch({ type: 'SET_EXECUTION_STATE', payload: 'error' });
+
+            const detectedMisconception = {
+              ...analysis,
+              detected: true,
+              misconception: 'Array Index Boundaries',
+              concept: 'Array Index Boundaries',
+              confidence: Math.max(analysis.confidence || 84, 84),
+              confidenceLabel: 'Medium–High',
+            };
+            dispatch({ type: 'SET_MISCONCEPTION', payload: detectedMisconception });
+
+            // Automatically open the Socratic AI Tutor panel
+            dispatch({ type: 'OPEN_AI_TUTOR' });
+
+            // Initialize the Socratic conversation script if not already started
+            if (conversation.length === 0 || conversation[0]?.stepId !== 'intro') {
+              dispatch({
+                type: 'ADD_MESSAGE',
+                payload: {
+                  role: 'ai',
+                  stepId: INDEX_BOUNDARY_SCRIPT.intro.id,
+                  message: INDEX_BOUNDARY_SCRIPT.intro.message,
+                  options: INDEX_BOUNDARY_SCRIPT.intro.options,
+                  timestamp: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                  mode: 'socratic',
+                },
+              });
+            }
+
+            addToast({
+              type: 'warning',
+              title: 'Misconception Detected: Array Index Boundaries',
+              message: 'CodeMind AI Tutor opened to guide you step-by-step.',
+            });
+          }, 350);
+        } else if (errorHistory.length >= 2) {
+          dispatch({ type: 'SET_EXECUTION_STATE', payload: 'analyzing' });
+          dispatch({ type: 'SET_MISCONCEPTION_DETECTING', payload: true });
+
+          setTimeout(async () => {
+            const analysis = await misconceptionService.analyzeError(
+              [...errorHistory, result.error],
+              [code]
+            );
+            dispatch({ type: 'SET_MISCONCEPTION_DETECTING', payload: false });
+            dispatch({ type: 'SET_EXECUTION_STATE', payload: 'error' });
 
             if (analysis.detected) {
               dispatch({ type: 'SET_MISCONCEPTION', payload: analysis });
-              dispatch({ type: 'SET_EXECUTION_STATE', payload: 'error' });
               setOutputTab('analysis');
               addToast({
                 type: 'warning',
                 title: 'Misconception Detected',
                 message: `Possible: ${analysis.misconception} (${analysis.confidence}% confidence)`,
               });
-            } else {
-              dispatch({ type: 'SET_EXECUTION_STATE', payload: 'error' });
             }
-          }, 500);
+          }, 400);
         } else {
           addToast({ type: 'warning', title: 'Error Detected', message: result.error });
         }
       } else {
         dispatch({ type: 'SET_EXECUTION_STATE', payload: 'success' });
-        if (masteryUpdate === null && errorHistory.length > 0) {
+        if (currentMisconception && currentMisconception.status !== 'resolved') {
           dispatch({
             type: 'UPDATE_CONCEPT_MASTERY',
-            payload: { id: 'index-boundaries', delta: 12 },
+            payload: { id: 'index-boundaries', delta: 25 },
           });
           setTimeout(() => dispatch({ type: 'CLEAR_MASTERY_UPDATE' }), 4000);
-          addToast({ type: 'success', title: '🎉 Concept Improved!', message: 'Array Index Boundaries: +12%' });
+          addToast({ type: 'success', title: '🎉 Execution Passed!', message: 'Array Index Boundaries mastery increased!' });
         } else {
           addToast({ type: 'success', title: 'Execution Successful', message: `Completed in ${result.executionTime}` });
         }
@@ -152,7 +206,7 @@ export function IDEPage() {
     if (outputRef.current) {
       outputRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [code, selectedLang, dispatch, addToast, errorHistory, masteryUpdate]);
+  }, [code, selectedLang, dispatch, addToast, errorHistory, masteryUpdate, conversation, currentMisconception]);
 
   const handleReset = () => {
     setCode(DEFAULT_CODE);
