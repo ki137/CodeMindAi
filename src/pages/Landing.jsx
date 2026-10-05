@@ -101,21 +101,21 @@ export function LandingPage() {
         .fromTo('.hero-badge', { opacity: 0, y: -20 }, { opacity: 1, y: 0, duration: 0.8 })
         .fromTo('.hero-title-line', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, stagger: 0.15 }, '-=0.5')
         .fromTo('.hero-subtitle', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, '-=0.4')
-        .fromTo('.hero-cta-btn', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1 }, '-=0.3')
-        .fromTo('.hero-ide-preview', { opacity: 0, y: 50, rotateX: 15 }, { opacity: 1, y: 0, rotateX: 0, duration: 1 }, '-=0.6');
+        .fromTo('.hero-cta-btn', { opacity: 0, scale: 0.9 }, { opacity: 1, scale: 1, duration: 0.5, stagger: 0.1 }, '-=0.3');
 
-      // 2. Hero IDE Parallax Scroll Effect (3D Tilt flattening on scroll)
-      gsap.to(heroIdeRef.current, {
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-        y: 80,
-        scale: 0.96,
-        opacity: 0.8,
-      });
+      // 2. Hero IDE Parallax Scroll Effect (subtle translateY without changing opacity)
+      if (heroIdeRef.current) {
+        gsap.to(heroIdeRef.current, {
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+          y: 60,
+          scale: 0.98,
+        });
+      }
 
       // 3. Counter ScrollTrigger
       ScrollTrigger.create({
@@ -168,22 +168,6 @@ export function LandingPage() {
         });
       });
 
-      // 6. Core Features Grid Stagger Reveal
-      gsap.fromTo(
-        '.feature-card',
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.15,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: '.features-grid',
-            start: 'top 80%',
-          },
-        }
-      );
 
       // 7. Demo CTA Card Reveal
       gsap.fromTo(
@@ -562,42 +546,58 @@ function IDEPreview() {
           <span className="dot dot-green" />
         </div>
         <span className="ide-preview-title">main.py — CodeMind AI</span>
-        <span className="badge badge-orange" style={{ marginLeft: 'auto', fontSize: '0.65rem' }}>
-          <AlertTriangle size={10} /> Error Detected
-        </span>
+        <div className="ide-error-banner-tag">
+          <AlertTriangle size={12} />
+          <span>Error Detected</span>
+        </div>
       </div>
       <div className="ide-preview-body">
         <div className="ide-preview-editor">
-          <pre className="code-block" style={{ fontSize: '0.75rem', margin: 0, borderRadius: 0 }}>
-            <span className="code-variable">numbers</span>{' = ['}
-            <span className="code-number">10</span>, <span className="code-number">20</span>, <span className="code-number">30</span>, <span className="code-number">40</span>, <span className="code-number">50</span>{']'}
+          <pre className="code-block" style={{ fontSize: '0.8125rem', margin: 0, borderRadius: 0, background: '#0C0F17', color: '#FFFFFF', lineHeight: 1.8 }}>
+            <span className="code-variable" style={{ color: '#93C5FD' }}>numbers</span>{' = ['}
+            <span className="code-number" style={{ color: '#6EE7B7' }}>10</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>20</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>30</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>40</span>, <span className="code-number" style={{ color: '#6EE7B7' }}>50</span>{']'}
             {'\n\n'}
-            <span className="code-keyword">for</span>{' i '}
-            <span className="code-keyword">in</span>{' '}
-            <span className="code-function">range</span>{'('}
-            <span className="code-error">6</span>{'): '}
-            <span className="code-comment">  ← Issue here</span>
+            <span className="code-keyword" style={{ color: '#F472B6', fontWeight: 800 }}>for</span>{' i '}
+            <span className="code-keyword" style={{ color: '#F472B6', fontWeight: 800 }}>in</span>{' '}
+            <span className="code-function" style={{ color: '#60A5FA', fontWeight: 700 }}>range</span>{'('}
+            <span className="code-error" style={{ background: '#EF4444', color: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontWeight: 900 }}>6</span>{'): '}
+            <span className="code-comment" style={{ color: '#F87171', fontWeight: 600 }}>  ← Issue here</span>
             {'\n    '}
-            <span className="code-function">print</span>{'(numbers[i])'}
+            <span className="code-function" style={{ color: '#60A5FA', fontWeight: 700 }}>print</span>{'(numbers[i])'}
           </pre>
         </div>
         <div className="ide-preview-output">
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-faint)', marginBottom: 6 }}>OUTPUT</div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#e2e8f0', lineHeight: 1.8 }}>
+          <div style={{ fontSize: '0.72rem', color: '#94A3B8', fontWeight: 800, letterSpacing: '0.05em', marginBottom: 8 }}>OUTPUT CONSOLE</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8125rem', color: '#E2E8F0', lineHeight: 1.8 }}>
             10{'\n'}20{'\n'}30{'\n'}40{'\n'}50
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#ff5555', marginTop: 6, padding: '6px 8px', background: 'rgba(255,85,85,0.1)', borderRadius: 6, borderLeft: '2px solid #ff5555' }}>
-            IndexError: list index out of range
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.78rem',
+            color: '#FEF2F2',
+            fontWeight: 700,
+            marginTop: 10,
+            padding: '8px 10px',
+            background: 'rgba(239, 68, 68, 0.25)',
+            borderRadius: 6,
+            border: '2px solid #EF4444',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6
+          }}>
+            <AlertTriangle size={14} color="#EF4444" style={{ flexShrink: 0 }} />
+            <span>IndexError: list index out of range</span>
           </div>
         </div>
       </div>
       <div className="ide-preview-ai">
         <div className="ide-preview-ai-header">
-          <div className="status-dot" />
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--teal)' }}>CodeMind Socratic Tutor</span>
+          <div className="status-dot" style={{ background: '#10B981', boxShadow: '0 0 8px #10B981' }} />
+          <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#38BDF8' }}>CodeMind Socratic Tutor</span>
+          <span style={{ fontSize: '0.7rem', background: '#0284C7', color: '#FFFFFF', padding: '1px 6px', borderRadius: 4, fontWeight: 700, marginLeft: 'auto' }}>AI GUIDE</span>
         </div>
         <div className="ide-preview-ai-msg">
-          💬 &quot;How many elements are inside your array?&quot;
+          💬 &quot;How many elements are inside your array? Look at the range bound vs the maximum valid index.&quot;
         </div>
       </div>
     </div>

@@ -16,6 +16,8 @@ import { ProfilePage } from './pages/ProfilePage';
 // Demo
 import { DemoModePanel } from './components/Demo/DemoMode';
 
+import { AuthModal } from './components/Auth/AuthModal';
+
 // Navbar already imported inside each page
 
 import { Play } from 'lucide-react';
@@ -43,6 +45,7 @@ function AppInner() {
       </Routes>
 
       <ToastContainer />
+      <AuthModal />
 
       {/* Demo / Judge Button */}
       {!isLanding && (

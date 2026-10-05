@@ -344,3 +344,144 @@
   font-weight: 700;
   text-align: center;
 }
+
+/* Socratic Script Option Buttons */
+.ai-options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.ai-option-btn {
+  background: #FFFFFF;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #000000;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1.4;
+  font-family: var(--font-sans);
+}
+
+.ai-option-btn:hover {
+  background: var(--primary, #4B75FF);
+  color: #FFFFFF;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.ai-option-btn.btn-action-fix {
+  background: #FFFBEB;
+  border-color: #000000;
+}
+
+.ai-option-btn.btn-action-fix:hover {
+  background: var(--yellow);
+  color: #000000;
+}
+
+/* Concept Understood Card */
+.concept-understood-card {
+  margin-top: 12px;
+  background: #FFFFFF;
+  border: 3px solid #000000;
+  border-radius: var(--radius-lg);
+  box-shadow: 5px 5px 0px #000000;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.concept-understood-header {
+  background: #069494;
+  color: #FFFFFF;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #000000;
+}
+
+.concept-understood-badge {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.concept-understood-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.concept-understood-title {
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #000000;
+  margin: 0;
+}
+
+.concept-understood-status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.concept-understood-evidence {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.concept-understood-evidence li {
+  font-size: 0.75rem;
+  color: #1E293B;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Mastery Card */
+.mastery-card {
+  margin-top: 12px;
+  background: #FFFFFF;
+  border: 3px solid #000000;
+  border-radius: var(--radius-lg);
+  box-shadow: 5px 5px 0px #000000;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+
+.mastery-card-header {
+  background: #FCE883;
+  color: #000000;
+  padding: 8px 14px;
+  font-weight: 900;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #000000;
+}
+
+.mastery-card-body {
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}

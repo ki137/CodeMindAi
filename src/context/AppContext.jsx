@@ -3,9 +3,31 @@ import { mockStudent, mockConcepts, mockMisconceptions, mockChallenges } from '.
 
 const AppContext = createContext(null);
 
+const getInitialAuth = () => {
+  try {
+    return localStorage.getItem('codemind_auth') === 'true';
+  } catch {
+    return false;
+  }
+};
+
+const getInitialStudent = () => {
+  try {
+    const saved = localStorage.getItem('codemind_user');
+    if (saved) return JSON.parse(saved);
+  } catch {
+    // fallback
+  }
+  return mockStudent;
+};
+
 const initialState = {
+  // Auth
+  isAuthenticated: getInitialAuth(),
+  authModalOpen: false,
+
   // Student
-  student: mockStudent,
+  student: getInitialStudent(),
   concepts: mockConcepts,
   misconceptions: mockMisconceptions,
   challenges: mockChallenges,
@@ -86,6 +108,26 @@ function appReducer(state, action) {
       hintLevel: 0,
       errorHistory: [],
     };
+    case 'OPEN_AUTH_MODAL': return { ...state, authModalOpen: true };
+    case 'CLOSE_AUTH_MODAL': return { ...state, authModalOpen: false };
+    case 'LOGIN': {
+      const user = action.payload || state.student;
+      try {
+        localStorage.setItem('codemind_auth', 'true');
+        localStorage.setItem('codemind_user', JSON.stringify(user));
+      } catch (err) {
+        console.error(err);
+      }
+      return { ...state, isAuthenticated: true, student: user, authModalOpen: false };
+    }
+    case 'LOGOUT': {
+      try {
+        localStorage.removeItem('codemind_auth');
+      } catch (err) {
+        console.error(err);
+      }
+      return { ...state, isAuthenticated: false, authModalOpen: false };
+    }
     default: return state;
   }
 }

@@ -127,22 +127,30 @@
 .hero-ide-preview {
   perspective: 1000px;
   transform-style: preserve-3d;
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
+  width: 100%;
 }
 
 .ide-preview {
-  background: var(--editor-bg);
+  background: #0C0F17 !important;
   border-radius: 18px;
-  border: 3px solid #000000;
-  box-shadow: 7px 7px 0px #000000;
+  border: 3px solid #000000 !important;
+  box-shadow: 8px 8px 0px #000000 !important;
   overflow: hidden;
+  opacity: 1 !important;
+  visibility: visible !important;
+  position: relative;
+  z-index: 2;
 }
 
 .ide-preview-topbar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  background: #000000;
+  gap: 12px;
+  padding: 12px 18px;
+  background: #161B22;
   border-bottom: 3px solid #000000;
 }
 
@@ -150,32 +158,58 @@
 .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #000000; }
 .dot-red { background: #FF4B4B; }
 .dot-yellow { background: #FFD670; }
-.dot-green { background: #4B75FF; }
+.dot-green { background: #10B981; }
 
 .ide-preview-title {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: #FFFFFF;
   font-weight: 700;
   font-family: var(--font-mono);
+  letter-spacing: -0.01em;
+}
+
+.ide-error-banner-tag {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FF7849;
+  color: #000000;
+  font-size: 0.72rem;
+  font-weight: 900;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  animation: pulseWarning 2s infinite ease-in-out;
+}
+
+@keyframes pulseWarning {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
 }
 
 .ide-preview-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  background: #0C0F17;
 }
 
 .ide-preview-editor {
-  padding: 16px;
-  border-right: 2px solid #1a2030;
+  padding: 18px;
+  border-right: 2px solid #21262D;
+  background: #0C0F17;
 }
 
 .ide-preview-output {
-  padding: 16px;
-  background: #06080e;
+  padding: 18px;
+  background: #06080E;
 }
 
 .ide-preview-ai {
-  padding: 14px 16px;
+  padding: 14px 18px;
   border-top: 3px solid #000000;
   background: #111625;
 }
@@ -188,9 +222,10 @@
 }
 
 .ide-preview-ai-msg {
-  font-size: 0.8125rem;
-  color: #FFFFFF;
+  font-size: 0.85rem;
+  color: #F8FAFC;
   font-weight: 600;
+  line-height: 1.5;
 }
 
 /* Infinite Horizontal Marquee Learning Loop Section */

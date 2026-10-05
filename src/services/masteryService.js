@@ -21,11 +21,14 @@ export const challengeService = {
   async evaluateAnswer(challengeId, code, answer) {
     return new Promise((resolve) => {
       setTimeout(() => {
+        const trimmed = (answer || '').trim();
+        const compactNumbers = trimmed.replace(/[\[\],]/g, ' ').trim().replace(/\s+/g, ' ');
         const correct =
           code.includes('range(len(') ||
           code.includes('range(5)') ||
-          answer === '0, 1, 2, 3, 4' ||
-          answer === '0-4';
+          compactNumbers === '0 1 2 3 4' ||
+          trimmed === '0-4' ||
+          trimmed === '0 to 4';
 
         resolve({
           correct,
